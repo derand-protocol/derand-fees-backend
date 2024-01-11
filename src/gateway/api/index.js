@@ -5,9 +5,14 @@ import { EVM_NETWORKS, FULFILL_LOG_ABI } from '../../constants.js';
 import { validateFeeUsageRequest, validateGetFeeUsage } from '../validators.js';
 import { ExecutorConsumer, ProcessedTx, sequelize } from '../../db/models.js';
 import { bn } from '../../utils.js';
-import { convertEthToMuon } from '../../fee.js';
+import { convertWeiToMuon } from '../../fee.js';
+import { createClient } from 'redis';
+import redisLock from 'redis-lock';
 
 const router = express.Router();
+const redisClient = createClient();
+const lock = redisLock(redisClient);
+await redisClient.connect();
 
 router.post('/record-fee-usage', 
   validateFeeUsageRequest(),
@@ -42,6 +47,7 @@ router.post('/record-fee-usage',
 
       let success = true;
       let data = "";
+      let done;
 
       try {
 
@@ -51,9 +57,18 @@ router.post('/record-fee-usage',
           tx.logs[2].topics
         );
 
+        done = await lock(`${chainId}-${decodedLogData.consumer.toLowerCase()}`);
+
+        const txFeeInWei = bn(tx.gasUsed).mul(
+          bn(tx.effectiveGasPrice)
+        );
+
+        const txFeeInPion = await convertWeiToMuon(chainId, txFeeInWei);
+
         await ProcessedTx.create({
           chainId: chainId.toString(),
-          txHash: txHash
+          txHash: txHash,
+          fee: txFeeInPion.toString()
         }, { transaction: dbTransaction });
 
         let consumer = await ExecutorConsumer.findOne({
@@ -73,23 +88,24 @@ router.post('/record-fee-usage',
           }, { transaction: dbTransaction })
         }
 
-        const txFeeInWei = bn(tx.gasUsed).mul(bn(tx.effectiveGasPrice));
-
-        consumer.feeUsed = bn(consumer.feeUsed).add(
-          await convertEthToMuon(chainId, txFeeInWei)
-        ).toString();
-
-        console.log(consumer.feeUsed);
-        
+        consumer.feeUsed = bn(consumer.feeUsed).add(txFeeInPion).toString();
         await consumer.save({ transaction: dbTransaction });
+
+        console.log("Fee:", txFeeInPion.toString());
+        console.log("totalFeeUsed:", consumer.feeUsed);
 
         data = consumer.toJSON();
 
         await dbTransaction.commit();
+        await done();
 
       } catch (error) {
         console.log(error);
         await dbTransaction.rollback();
+
+        if(done) {
+          await done();
+        }
 
         success = false;
         data = "An error occurred during proccessing the transaction";

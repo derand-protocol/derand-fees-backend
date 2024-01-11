@@ -52,6 +52,10 @@ export const initModels = async () => {
       txHash: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      fee: {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     }, {
       sequelize,

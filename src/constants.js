@@ -3,7 +3,8 @@ export const EVM_NETWORKS = {
     rpc_url: "https://rpc.ankr.com/polygon_mumbai",
     coordinator_address: "0x6e3cf66cb5b6F56B2e57849833e02Ac98637eB83",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-mumbai",
-    decimals: 18
+    decimals: 18,
+    coingecko_id: "matic-network"
   }
 }
 
