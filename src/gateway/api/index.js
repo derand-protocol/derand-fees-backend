@@ -67,6 +67,7 @@ router.post('/record-fee-usage',
 
         await ProcessedTx.create({
           chainId: chainId.toString(),
+          consumer: decodedLogData.consumer.toLowerCase(),
           txHash: txHash,
           fee: txFeeInPion.toString()
         }, { transaction: dbTransaction });

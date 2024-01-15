@@ -49,6 +49,10 @@ export const initModels = async () => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      consumer: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       txHash: {
         type: DataTypes.STRING,
         allowNull: false
