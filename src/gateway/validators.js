@@ -47,3 +47,12 @@ export const validateGetFeeUsage = () => {
       .matches(/^0x.*$/)
   ]
 }
+
+export const validateGetConsumersList = () => {
+  return [
+    query('page')
+      .exists()
+      .isInt({min: 1})
+      .withMessage("Invalid page")
+  ]
+}

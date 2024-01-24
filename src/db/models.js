@@ -32,6 +32,10 @@ export const initModels = async () => {
       feeUsed: {
         type: DataTypes.STRING,
         defaultValue: "0"
+      },
+      numberOfTxs: {
+        type: DataTypes.BIGINT,
+        defaultValue: 0
       }
     }, {
       sequelize,
@@ -73,6 +77,7 @@ export const initModels = async () => {
     });
   
     // await sequelize.sync({ force: true });
+    // await sequelize.sync({ alter: true });
     await sequelize.sync();
 
     console.log('Connection has been established successfully.');

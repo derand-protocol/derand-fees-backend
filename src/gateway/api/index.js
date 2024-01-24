@@ -2,12 +2,17 @@ import express from 'express';
 import Web3 from "web3";
 import { validationResult } from 'express-validator';
 import { EVM_NETWORKS, FULFILL_LOG_ABI } from '../../constants.js';
-import { validateFeeUsageRequest, validateGetFeeUsage } from '../validators.js';
+import { 
+  validateFeeUsageRequest, 
+  validateGetConsumersList, 
+  validateGetFeeUsage 
+} from '../validators.js';
 import { ExecutorConsumer, ProcessedTx, sequelize } from '../../db/models.js';
-import { bn } from '../../utils.js';
+import { ONE_BN, bn } from '../../utils.js';
 import { convertWeiToMuon } from '../../fee.js';
 import { createClient } from 'redis';
 import redisLock from 'redis-lock';
+import { getConsumerBalances } from '../../subgraph.js';
 
 const router = express.Router();
 const redisClient = createClient();
@@ -90,6 +95,7 @@ router.post('/record-fee-usage',
         }
 
         consumer.feeUsed = bn(consumer.feeUsed).add(txFeeInPion).toString();
+        consumer.numberOfTxs = bn(consumer.numberOfTxs).add(ONE_BN);
         await consumer.save({ transaction: dbTransaction });
 
         console.log("Fee:", txFeeInPion.toString());
@@ -140,7 +146,7 @@ router.get('/consumer-fee-usage',
         message: "Invalid request",
         data: errors.array()
       })
-      return next()
+      return next();
     }
     
     const {chainId, executor, consumer} = req.query;
@@ -175,8 +181,56 @@ router.get('/consumer-fee-usage',
       });
     }
     
-    next()
+    next();
 
 })
+
+router.get('/consumers-list', validateGetConsumersList(),
+ async (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    res.json({
+      success: false,
+      message: "Invalid request",
+      data: errors.array()
+    })
+    return next();
+  }
+
+  try {
+    const { page } = req.query;
+    const consumerBalances = await getConsumerBalances(100, (page - 1) * 100);
+    await Promise.all(consumerBalances.map(async (item) => {
+      item['feeBalance'] = item['amount'];
+      delete item['amount'];
+      let executorConsumer = await ExecutorConsumer.findOne({
+        where: {
+          chainId: item['chainId'],
+          executor: item['executor'].toLowerCase(),
+          consumer: item['consumer'].toLowerCase()
+        }
+      });
+      let feeUsed = 0;
+      if(executorConsumer) {
+        feeUsed = executorConsumer.feeUsed;
+      }
+      item['feeUsed'] = feeUsed;
+      item['numberOfTxs'] = executorConsumer.numberOfTxs;
+      item['balance'] = bn(item['feeBalance']).sub(bn(item['feeUsed'])).toString();
+    }));
+    res.json({
+      success: true,
+      data: consumerBalances
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      data: error.message
+    }); 
+  }
+
+  next();
+});
 
 export default router
