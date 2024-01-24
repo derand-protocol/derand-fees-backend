@@ -211,8 +211,8 @@ router.get('/consumers-list', validateGetConsumersList(),
           consumer: item['consumer'].toLowerCase()
         }
       });
-      let feeUsed = 0;
-      let numberOfTxs = 0;
+      let feeUsed = "0";
+      let numberOfTxs = "0";
       if(executorConsumer) {
         feeUsed = executorConsumer.feeUsed;
         numberOfTxs = executorConsumer.numberOfTxs;
