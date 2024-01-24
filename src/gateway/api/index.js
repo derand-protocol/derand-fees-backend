@@ -212,11 +212,13 @@ router.get('/consumers-list', validateGetConsumersList(),
         }
       });
       let feeUsed = 0;
+      let numberOfTxs = 0;
       if(executorConsumer) {
         feeUsed = executorConsumer.feeUsed;
+        numberOfTxs = executorConsumer.numberOfTxs;
       }
       item['feeUsed'] = feeUsed;
-      item['numberOfTxs'] = executorConsumer.numberOfTxs;
+      item['numberOfTxs'] = numberOfTxs;
       item['balance'] = bn(item['feeBalance']).sub(bn(item['feeUsed'])).toString();
     }));
     res.json({
