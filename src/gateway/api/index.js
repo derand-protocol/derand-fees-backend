@@ -8,7 +8,7 @@ import {
   validateGetFeeUsage 
 } from '../validators.js';
 import { ExecutorConsumer, ProcessedTx, sequelize } from '../../db/models.js';
-import { ONE_BN, bn } from '../../utils.js';
+import { ONE_BN, bn, exponentBN } from '../../utils.js';
 import { convertWeiToMuon } from '../../fee.js';
 import { createClient } from 'redis';
 import redisLock from 'redis-lock';
@@ -69,7 +69,9 @@ router.post('/record-fee-usage',
         );
 
         let txFeeInPion = await convertWeiToMuon(chainId, txFeeInWei);
-        txFeeInPion = txFeeInPion.add(ONE_BN);
+        txFeeInPion = txFeeInPion.add(
+          exponentBN(10, EVM_NETWORKS[chainId].decimals)
+        );
 
         await ProcessedTx.create({
           chainId: chainId.toString(),
