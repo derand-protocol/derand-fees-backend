@@ -68,7 +68,8 @@ router.post('/record-fee-usage',
           bn(tx.effectiveGasPrice)
         );
 
-        const txFeeInPion = await convertWeiToMuon(chainId, txFeeInWei);
+        let txFeeInPion = await convertWeiToMuon(chainId, txFeeInWei);
+        txFeeInPion = txFeeInPion.add(ONE_BN);
 
         await ProcessedTx.create({
           chainId: chainId.toString(),
