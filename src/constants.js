@@ -1,35 +1,35 @@
 export const EVM_NETWORKS = {
   80001: {
     rpc_url: "https://rpc.ankr.com/polygon_mumbai",
-    coordinator_address: "0x3abAAD56d723b0aBEC11d5e8a2F1918AaaFbf698",
+    coordinator_address: "0x7C7DA3d2a57fb63936fB4824a88Dc7C581c9bA6D",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-mumbai",
     decimals: 18,
     coingecko_id: "matic-network"
   },
   97: {
     rpc_url: "https://bsc-testnet.publicnode.com",
-    coordinator_address: "0x78208AfF3976165feF81EE46DEE50eb72cf24834",
+    coordinator_address: "0xc251Ec1ab514Aa8842B4f437b7e5c6cF4abE56Aa",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-bsc-testnet",
     decimals: 18,
     coingecko_id: "binancecoin"
   },
   11155111: {
     rpc_url: "https://rpc.ankr.com/eth_sepolia",
-    coordinator_address: "0xa7b7A5ACB18825a2599156FEa1FA98f4ebD292C2",
+    coordinator_address: "0xcfF6Cd4ddb0AF2f27F670f53018b5099Fd674370",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-sepolia",
     decimals: 18,
     coingecko_id: "ethereum"
   },
   5: {
     rpc_url: "https://rpc.ankr.com/eth_goerli",
-    coordinator_address: "0xe8E36D3FbB933f4aa45ED0B1c3D8Ae942535a529",
+    coordinator_address: "0x14157aa3B1aA584813c41511B3A34CD40774665E",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-goerli",
     decimals: 18,
     coingecko_id: "ethereum"
   },
   43113: {
     rpc_url: "https://rpc.ankr.com/avalanche_fuji",
-    coordinator_address: "0xB01496ed0171dc66aB743B4604671D57c00C6182",
+    coordinator_address: "0xd8108Dc8d8675c84c8E7377Fc790E188c05f07A0",
     graph_url: "https://api.thegraph.com/subgraphs/name/shayanshiravani/derand-avalanche-fuji",
     decimals: 18,
     coingecko_id: "avalanche-2"
