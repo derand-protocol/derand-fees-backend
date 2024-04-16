@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const getConsumerBalances = async (count = 1000, skip = 0) => {
-  const graph_url = "https://api.thegraph.com/subgraphs/name/" + 
-  "shayanshiravani/derand-fee-manager-bsc"
+  const graph_url = "https://api.studio.thegraph.com/query/71642/" + 
+  "derand-fee-manager-bsc/version/latest"
   const query = `
     {
       consumerBalances(
