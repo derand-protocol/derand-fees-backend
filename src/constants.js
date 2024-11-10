@@ -47,6 +47,20 @@ export const EVM_NETWORKS = {
     graph_url: "https://subgraph.satsuma-prod.com/96389a812495/shayans-team--869747/derand-zeta/api",
     decimals: 18,
     coingecko_id: "zetachain"
+  },
+  42161: {
+    rpc_url: "https://arbitrum.llamarpc.com",
+    coordinator_address: "0x24092A71ae67b6773F6ecdc56a9E153e5C57D2E7",
+    graph_url: "https://api.studio.thegraph.com/query/71642/derand-arbitrum-one/version/latest",
+    decimals: 18,
+    coingecko_id: "ethereum"
+  },
+  42170: {
+    rpc_url: "https://nova.arbitrum.io/rpc",
+    coordinator_address: "0x24092A71ae67b6773F6ecdc56a9E153e5C57D2E7",
+    graph_url: "https://api.studio.thegraph.com/query/71642/derand-arbitrum-nova/version/latest",
+    decimals: 18,
+    coingecko_id: "ethereum"
   }
 }
 
